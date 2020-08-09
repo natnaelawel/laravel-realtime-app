@@ -18,5 +18,10 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
+Route::apiResource('questions/{question}/replies', 'ReplyController');
 Route::apiResource('questions', 'QuestionController');
 Route::apiResource('categories', 'CategoryController');
+Route::get('likes/{reply}', 'LikeController@likes');
+Route::post('likes/{reply}', 'LikeController@likeIt');
+Route::delete('likes/{reply}', 'LikeController@unLikeIt');
+
