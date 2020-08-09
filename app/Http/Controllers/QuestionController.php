@@ -76,15 +76,20 @@ class QuestionController extends Controller
      */
     public function update(Request $request, Question $question)
     {
-    
         validator($request->toArray(), [
             'title'=> 'required',
             'body' => 'required|max:255',
-            'user_id' => 'required',
             'category_id' => 'required'
         ]);
+        $question->update([
+            'title' => $request->title,
+            'body' => $request->body,
+            'category_id' => $request->category_id,
+            ]);
 
-
+        return response('Updated', Response::HTTP_ACCEPTED);
+            // session()->flash('success','Post Updated Successfully');
+            // return redirect(route('posts.index'));
     }
 
     /**
