@@ -3,8 +3,9 @@
     <v-navigation-drawer
       v-model="drawer"
       :color="color"
-      expand-on-hover
-      :mini-variant="miniVariant"
+      :mini-variant="mini"
+      height="calc(100vh - 64px)"
+      miniVariantWidth= 57
       :src="bg"
       absolute
       dark
@@ -14,7 +15,7 @@
       app
     >
       <v-list dense nav class="py-0">
-        <v-list-item two-line :class="miniVariant && 'pa-0'">
+        <v-list-item two-line class="pa-0">
           <v-list-item-avatar>
             <v-img src="https://randomuser.me/api/portraits/men/81.jpg" />
           </v-list-item-avatar>
@@ -50,20 +51,31 @@
           </v-list-item-content>
         </v-list-item>
       </template>
-      
+
     </v-navigation-drawer>
 
     <v-toolbar dark src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg">
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon  @click.native.stop="mini = !mini"></v-app-bar-nav-icon>
 
       <v-toolbar-title>Laravel Forum</v-toolbar-title>
 
       <v-spacer></v-spacer>
-
-      <v-btn icon>
-        <v-item>Sign Up</v-item>
-        <v-icon>mdi-export</v-icon>
-      </v-btn>
+        <v-toolbar-items class="hidden-sm-and-md">
+            
+            <v-btn>
+                <v-item>Forum</v-item>
+            </v-btn>
+             <v-btn>
+                <v-item>Ask Question</v-item>
+            </v-btn>
+             <v-btn>
+                <v-item>Category</v-item>
+            </v-btn>
+             <v-btn icon >
+                <v-item>Logout</v-item>
+                <v-icon>mdi-export</v-icon>
+            </v-btn>
+        </v-toolbar-items>
 
       
     </v-toolbar>
@@ -76,7 +88,7 @@
 export default {
   data() {
     return {
-      drawer: false,
+      drawer: true,
       items: [
         { title: "Dashboard", icon: "mdi-view-dashboard" },
         { title: "Photos", icon: "mdi-image" },
@@ -84,11 +96,10 @@ export default {
       ],
       color: "primary",
       colors: ["primary", "blue", "success", "red", "teal"],
-      right: false,
       permanent: false,
-      miniVariant: true,
-      expandOnHover: true,
-      background: false,
+      expand: false,
+      mini: false,
+      background: true,
     };
   },
   computed: {
@@ -97,6 +108,20 @@ export default {
         ? "https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg"
         : undefined;
     },
+    toolbarSize () {
+    // this.$vuetify.breakpoint.name !== 'sm' ? this.mini = true : this.mini = false
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+        case 'sm':return '56px'
+        case 'md':return '64px'
+        case 'lg':return '64px'
+        case 'xl':return '70px'
+        default : return '64px'
+      }
+    }},
+  mounted () {
+    this.$vuetify.breakpoint.name === 'sm' ? this.mini = !this.mini : this.mini = !this.mini
   },
   components: {
     // appNavBar : NavBar,

@@ -27,8 +27,8 @@
             </v-col>
           </v-row>
         </v-container>
+        <app-footer></app-footer>
       </v-main>
-    <app-footer></app-footer>
   </div>
 </template>
 
