@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class LikeController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('jwt.verify', ['except' => ['likes']]);
+    }
+
     /**
      * Display a listing of the resource.
      *

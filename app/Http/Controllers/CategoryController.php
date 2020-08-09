@@ -9,6 +9,12 @@ use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 class CategoryController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('jwt.verify', ['except' => ['login', 'register']]);
+    }
+    
     /**
      * Display a listing of the resource.
      *

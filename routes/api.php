@@ -18,10 +18,36 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
+
+// Route::post('register', 'UserController@register');
+// Route::post('login', 'UserController@authenticate');
+// Route::get('open', 'DataController@open');
+
+// Route::group(['middleware' => ['jwt.verify']], function() {
+//     Route::get('user', 'UserController@getAuthenticatedUser');
+//     Route::get('closed', 'DataController@closed');
+// });
+
+Route::group([
+
+    'middleware' => 'api',
+    'prefix' => 'auth'
+
+], function () {
+
+    Route::post('login', 'AuthController@login');
+    Route::post('register', 'AuthController@register');
+    Route::post('logout', 'AuthController@logout');
+    Route::post('refresh', 'AuthController@refresh');
+    Route::post('me', 'AuthController@me');
+    Route::post('authenticated','AuthController@getAuthenticatedUser');
+
+});
+
+
 Route::apiResource('questions/{question}/replies', 'ReplyController');
 Route::apiResource('questions', 'QuestionController');
 Route::apiResource('categories', 'CategoryController');
 Route::get('likes/{reply}', 'LikeController@likes');
 Route::post('likes/{reply}', 'LikeController@likeIt');
 Route::delete('likes/{reply}', 'LikeController@unLikeIt');
-
