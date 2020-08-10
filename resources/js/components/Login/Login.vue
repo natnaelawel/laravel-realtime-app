@@ -107,10 +107,8 @@ export default {
     methods: {
         submit() {
             this.$v.$touch();
-            console.log(this.form);
-            axios.post('api/auth/login', this.form)
-                .then(res => console.log(res.data))
-                .catch(error => console.log(error.response.data));
+            // console.log(this.form);
+            User.login(this.form);
         }
     }
 };

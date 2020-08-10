@@ -51,9 +51,9 @@ class AuthController extends Controller
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
+        $user = auth()->user()->name;
+        return response()->json(compact('user','token'));
 
-        return response()->json(compact('token'));
-        
     }
 
     public function register(Request $request){
@@ -62,7 +62,7 @@ class AuthController extends Controller
                     'email' => 'required|string|email|max:255|unique:users',
                     'password' => 'required|string|min:6',
                 ]);
-    
+
         if($validator->fails()){
                 return response()->json($validator->errors()->toJson(), 400);
         }
@@ -236,7 +236,7 @@ class AuthController extends Controller
     //         return response()->json(compact('token'));
     //     }
 
-    
+
         // public function register(Request $request)
         // {
         //         $validator = Validator::make($request->all(), [
