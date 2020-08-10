@@ -62,7 +62,7 @@
       <v-spacer></v-spacer>
         <v-toolbar-items class="hidden-sm-and-md">
             
-            <v-btn>
+            <!-- <v-btn>
                 <v-item>Forum</v-item>
             </v-btn>
              <v-btn>
@@ -74,6 +74,9 @@
              <v-btn icon >
                 <v-item>Logout</v-item>
                 <v-icon>mdi-export</v-icon>
+            </v-btn> -->
+            <v-btn>
+                <router-link to="/login">Login</router-link>
             </v-btn>
         </v-toolbar-items>
 

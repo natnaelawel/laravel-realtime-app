@@ -1,5 +1,7 @@
 import VueRouter from "vue-router";
 import Home from "./components/Home.vue";
+import Login from './components/Login/Login.vue';
+import Register from './components/Login/Register.vue';
 const routes = [
     { path: '/', component: Home },
     { path: '/login', component: Login },
@@ -8,6 +10,7 @@ const routes = [
   ]
 const router = new VueRouter({
     mode:"history",
+    hashBang: false,
     routes // short for `routes: routes`
   });
 
