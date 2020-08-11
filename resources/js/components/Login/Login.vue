@@ -6,11 +6,10 @@
                     <v-row>
                         <v-col cols="">
                             <v-text-field
-                                v-model="form.email"
+                                v-model="email"
                                 :error-messages="emailErrors"
                                 label="E-mail"
                                 required
-                                @input="$v.email.$touch()"
                                 @blur="$v.email.$touch()"
                             ></v-text-field
                         ></v-col>
@@ -19,27 +18,24 @@
                         <v-col>
                             <v-text-field
                                 autocomplete="current-password"
-                                v-model="form.password"
+                                v-model="password"
                                 label="Enter password"
                                 hint="Your password passed! Password rules are not meant to be broken!"
                                 :error-messages="passwordErrors"
-                                :append-icon="
-                                    form.password ? 'mdi-eye' : 'mdi-eye-off'
-                                "
-                                @click:append="() => (form.password = !form.password)"
-                                :type="form.password ? 'password' : 'text'"
-                                 @input="$v.password.$touch()"
+                                :append-icon="password ? 'mdi-eye' : 'mdi-eye-off'"
+                                @click:append="() => (isHidden = !isHidden)"
+                                :type="isHidden ? 'password' : 'text'"
+                                @blur="$v.password.$touch()"
                             ></v-text-field
                         ></v-col>
                     </v-row>
                     <v-row align="center">
                         <v-col>
                             <v-checkbox
-                                v-model="form.remember"
+                                v-model="remember"
                                 :error-messages="rememberErrors"
                                 label="Remember me?"
                                 required
-                                @change="$v.remember.$touch()"
                                 @blur="$v.remember.$touch()"
                             ></v-checkbox
                         ></v-col>
@@ -56,6 +52,8 @@
 </template>
 
 <script>
+// if (!this.$v.email.$dirty) return errors;
+
 import { validationMixin } from "vuelidate";
 import { required, maxLength, email } from "vuelidate/lib/validators";
 export default {
@@ -72,11 +70,10 @@ export default {
     },
 
     data: () => ({
-        form:{
-            email: "",
-            password: "",
-            remember: false
-        },
+        email: "",
+        password: "",
+        remember: false,
+        isHidden: true,
         valid: true,
         value: true,
     }),
@@ -85,8 +82,7 @@ export default {
         rememberErrors() {
             const errors = [];
             if (!this.$v.remember.$dirty) return errors;
-            !this.$v.remember.checked &&
-                errors.push("You must agree to continue!");
+            !this.$v.remember.checked && errors.push("You must agree to continue!");
             return errors;
         },
         emailErrors() {
@@ -98,6 +94,7 @@ export default {
         },
         passwordErrors() {
             const errors = [];
+            if (!this.$v.password.$dirty) return errors;
             !this.$v.password.required && errors.push("Password is required");
             return errors;
         }
@@ -107,8 +104,10 @@ export default {
     methods: {
         submit() {
             this.$v.$touch();
-            // console.log(this.form);
-            User.login(this.form);
+            User.login({
+                email: this.email,
+                password: this.password
+            });
         }
     }
 };

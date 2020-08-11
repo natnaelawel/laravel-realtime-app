@@ -9,11 +9,16 @@ require('./bootstrap');
 window.Vue = require('vue');
 import Vue from 'vue';
 import Vuetify from 'vuetify';
+
 Vue.use(Vuetify);
 
 import VueRouter from 'vue-router';
 
 Vue.use(VueRouter);
+
+import vuelidate from 'vuelidate';
+
+Vue.use(vuelidate);
 
 import router from './routes';
 
@@ -21,7 +26,10 @@ import User from './helpers/User';
 
 window.User = User;
 
-console.log(User.id());
+
+
+// import colors from 'vuetify/lib/util/colors';
+
 
 /**
  * The following block of code may be used to automatically register your
@@ -33,6 +41,7 @@ console.log(User.id());
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
+
 import Home from './components/Home.vue';
 import Nav from './components/includes/AppNav.vue';
 import Footer from './components/includes/AppFooter.vue';
@@ -51,3 +60,15 @@ const app = new Vue({
     vuetify: new Vuetify(),
     router
 });
+
+// vuetify: new Vuetify({
+//     theme: {
+//         themes: {
+//           light: {
+//             primary: colors.blue.darken-3, // #E53935
+//             secondary: colors.blue.lighten-3, // #FFCDD2
+//             accent: colors.indigo.base, // #3F51B5
+//           },
+//         },
+//       },
+// }),

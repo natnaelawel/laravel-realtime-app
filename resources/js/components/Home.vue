@@ -10,20 +10,7 @@
             justify="center"
           >
             <v-col class="text-center">
-              <v-tooltip left>
-                <template v-slot:activator="{ on }">
-                  <v-btn
-                    :href="source"
-                    icon
-                    large
-                    target="_blank"
-                    v-on="on"
-                  >
-                    <v-icon large>mdi-code-tags</v-icon>
-                  </v-btn>
-                </template>
-                <span>Source</span>
-              </v-tooltip>
+             HomePage
             </v-col>
           </v-row>
         </v-container>
@@ -35,6 +22,11 @@
 <script>
 export default {
     name:'app-home',
+    data(){
+        return {
+            on: true,
+        }
+    }
 
 }
 </script>

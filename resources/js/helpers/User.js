@@ -4,15 +4,18 @@ class User{
     login(formData){
         axios.post('api/auth/login', formData)
         .then(res =>{
+            console.log('data is ', res.data);
             this.responseAfterLogin(res.data);
-            console.log('in user.js', res.data);
             Token.payload(res.data.token);
+            window.location = '/';
+
         })
         .catch(error => console.log(error.response.data));
     }
     responseAfterLogin({user,token}){
         if(Token.isValid(token)){
             AppStorage.store(user, token);
+
         }
     }
     hasToken(){
@@ -28,6 +31,8 @@ class User{
     }
     logOut(){
         AppStorage.clear();
+        window.location = '/login';
+
     }
 
     name(){

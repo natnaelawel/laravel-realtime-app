@@ -5,7 +5,7 @@
       :color="color"
       :mini-variant="mini"
       height="calc(100vh - 64px)"
-      miniVariantWidth= 57
+      miniVariantWidth="57"
       :src="bg"
       absolute
       dark
@@ -28,21 +28,20 @@
 
         <v-divider></v-divider>
 
-        <template v-for="item in items" >
-        <v-list-item :key="item.title" link>
-            
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
+        <template v-for="item in items">
+          <v-list-item :key="item.title" link>
+            <v-list-item-icon>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-icon>
 
-          <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
         </template>
       </v-list>
       <template v-slot:append>
-         <v-list-item link>         
+        <v-list-item link>
           <v-list-item-icon>
             <v-icon>mdi-export</v-icon>
           </v-list-item-icon>
@@ -51,36 +50,38 @@
           </v-list-item-content>
         </v-list-item>
       </template>
-
     </v-navigation-drawer>
 
     <v-toolbar dark src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg">
-      <v-app-bar-nav-icon  @click.native.stop="mini = !mini"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon @click.native.stop="mini = !mini"></v-app-bar-nav-icon>
 
       <v-toolbar-title>Laravel Forum</v-toolbar-title>
 
       <v-spacer></v-spacer>
-        <v-toolbar-items class="hidden-sm-and-md">
-            
-            <!-- <v-btn>
-                <v-item>Forum</v-item>
-            </v-btn>
-             <v-btn>
-                <v-item>Ask Question</v-item>
-            </v-btn>
-             <v-btn>
-                <v-item>Category</v-item>
-            </v-btn>
-             <v-btn icon >
-                <v-item>Logout</v-item>
-                <v-icon>mdi-export</v-icon>
-            </v-btn> -->
-            <v-btn>
-                <router-link to="/login">Login</router-link>
-            </v-btn>
-        </v-toolbar-items>
-
-      
+      <v-toolbar-items class="hidden-sm-and-md">
+        <v-btn text>
+          Forum
+        </v-btn>
+        <v-btn text>
+          Ask Question
+        </v-btn>
+          <v-btn text>
+              <router-link class="toolbar-link" to="/category">Category</router-link>
+          </v-btn>
+        <template v-if="!isLoggedIn">
+          <v-btn text >
+              <router-link class="toolbar-link" to="/register">Signup</router-link>
+          </v-btn>
+          <v-btn text>
+            <router-link class="toolbar-link" to="/login">Signin</router-link>
+          </v-btn>
+        </template>
+        <template v-else>
+          <v-btn text color="white"  @click.prevent="logout" >
+              Logout
+          </v-btn>
+        </template>
+      </v-toolbar-items>
     </v-toolbar>
   </nav>
 </template>
@@ -103,6 +104,7 @@ export default {
       expand: false,
       mini: false,
       background: true,
+      isLoggedIn: false,
     };
   },
   computed: {
@@ -111,30 +113,49 @@ export default {
         ? "https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg"
         : undefined;
     },
-    toolbarSize () {
-    // this.$vuetify.breakpoint.name !== 'sm' ? this.mini = true : this.mini = false
+    toolbarSize() {
+      // this.$vuetify.breakpoint.name !== 'sm' ? this.mini = true : this.mini = false
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-        case 'sm':return '56px'
-        case 'md':return '64px'
-        case 'lg':return '64px'
-        case 'xl':return '70px'
-        default : return '64px'
+        case "xs":
+        case "sm":
+          return "56px";
+        case "md":
+          return "64px";
+        case "lg":
+          return "64px";
+        case "xl":
+          return "70px";
+        default:
+          return "64px";
       }
-    }},
-  mounted () {
-    this.$vuetify.breakpoint.name === 'sm' ? this.mini = !this.mini : this.mini = !this.mini
+    },
+  },
+  mounted() {
+    this.isLoggedIn = User.loggedIn();
+    this.$vuetify.breakpoint.name === "sm"
+      ? (this.mini = !this.mini)
+      : (this.mini = !this.mini);
   },
   components: {
     // appNavBar : NavBar,
     // appNavDrawer : NavDrawer
   },
+  methods:{
+      logout(){
+          User.logOut();
+          this.$router.push({name: 'login'});
+      }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
-    .drawer{
-        margin-top: 64px;
-    }
+.drawer {
+  margin-top: 64px;
+}
+.toolbar-link{
+    color: white;
+    text-decoration: none;
+}
 </style>>

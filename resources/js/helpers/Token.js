@@ -3,7 +3,7 @@ class Token
     isValid(token){
         const payload = this.payload(token);
         if(payload){
-            return payload.iss === "http://laravel-realtime-app.test/api/auth/login" ? true : false;
+            return payload.iss === "http://laravel-realtime-app.test/api/auth/login" || "http://laravel-realtime-app.test/api/auth/register" ? true : false;
         }
         return false;
     }
