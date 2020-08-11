@@ -1,5 +1,9 @@
 import VueRouter from "vue-router";
 import Home from "./components/Home.vue";
+import Forum from "./components/Forum/Index.vue";
+import Questions from "./components/Forum/Questions.vue";
+import SingleQuestion from './components/Forum/QuestionShow.vue';
+import CreateQuestion from './components/Forum/Create.vue';
 import Login from './components/Login/Login.vue';
 import Register from './components/Login/Register.vue';
 import User from "./helpers/User";
@@ -58,9 +62,34 @@ const routes = [{
     {
         path: '/forum',
         name: 'forum',
-        component: Home
-    }
-]
+        component: Forum,
+        meta: {
+            requiresAuth: true,
+        },
+        children: [
+            {
+                path: '',
+                name: 'questions',
+                component: Questions,
+            },
+            {
+                name:'createQuestion',
+                path: 'question/create',
+                component: CreateQuestion
+            },
+            {
+                path: 'question/:slug',
+                name: 'showSingleQuestion',
+                component: SingleQuestion
+            },
+            {
+                name:'editSingleQuestion',
+                path: 'posts/:slug/edit',
+                component: SingleQuestion
+            }
+        ]
+    },
+];
 const router = new VueRouter({
     mode: "history",
     hashBang: false,
@@ -77,13 +106,12 @@ router.beforeEach((to, from, next) => {
         } else {
             next();
         }
-    }else if(isAuthenticated()){
+    } else if (isAuthenticated()) {
         next({
             name: 'home',
             // params: { nextUrl: to.fullPath }
         });
-    }
-     else {
+    } else {
         next();
     }
 });

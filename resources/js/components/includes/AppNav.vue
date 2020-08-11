@@ -1,18 +1,20 @@
 <template>
-  <nav>
+  <nav >
     <v-navigation-drawer
       v-model="drawer"
       :color="color"
       :mini-variant="mini"
-      height="calc(100vh - 64px)"
+      height="calc(100vh - 62px)"
       miniVariantWidth="57"
       :src="bg"
       absolute
       dark
-      class="drawer"
       persistent
       clipped
       app
+      fixed
+      permanent
+      :style="'top:'+toolbarSize"
     >
       <v-list dense nav class="py-0">
         <v-list-item two-line class="pa-0">
@@ -52,7 +54,7 @@
       </template>
     </v-navigation-drawer>
 
-    <v-toolbar dark src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg">
+    <v-toolbar class="sticky" dark src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg">
       <v-app-bar-nav-icon @click.native.stop="mini = !mini"></v-app-bar-nav-icon>
 
       <v-toolbar-title>Laravel Forum</v-toolbar-title>
@@ -60,10 +62,14 @@
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-md">
         <v-btn text>
-          Forum
+            <router-link class="toolbar-link" :to="{path:'/forum'}">
+                Forum
+            </router-link>
         </v-btn>
         <v-btn text>
-          Ask Question
+            <router-link class="toolbar-link" :to="{name:'createQuestion'}">
+                Ask Question
+            </router-link>
         </v-btn>
           <v-btn text>
               <router-link class="toolbar-link" to="/category">Category</router-link>
@@ -114,7 +120,7 @@ export default {
         : undefined;
     },
     toolbarSize() {
-      // this.$vuetify.breakpoint.name !== 'sm' ? this.mini = true : this.mini = false
+      this.$vuetify.breakpoint.name !== 'sm' ? this.mini = true : this.mini = false
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       switch (this.$vuetify.breakpoint.name) {
         case "xs":
@@ -151,11 +157,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.drawer {
-  margin-top: 64px;
-}
-.toolbar-link{
-    color: white;
-    text-decoration: none;
-}
+    .drawer {
+        margin-top: 64px;
+    }
+    .toolbar-link{
+        color: white;
+        text-decoration: none;
+    }
+   .sticky{
+    position: fixed !important;
+    z-index: 100;
+    width: 100%;
+    }
 </style>>

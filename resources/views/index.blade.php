@@ -18,10 +18,22 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+        html,body, #app {
+            height: 100vh !important;
+            margin: 0;
+            overflow: hidden;
+            }
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+
+        }
+    </style>
 </head>
 <body>
     <div id="app">
-        {{-- <app-home></app-home> --}}
         <v-app>
             <router-view></router-view>
         </v-app>
