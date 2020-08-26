@@ -45,7 +45,6 @@ class QuestionController extends Controller
         validator($request->toArray(), [
             'title'=> 'required|string',
             'body' => 'required|string|max:255',
-            'user_id' => 'required',
             'category_id' => 'required'
         ]);
 
@@ -55,10 +54,10 @@ class QuestionController extends Controller
             'slug' => Str::slug($request->title, '-'),
             'body' => $request->body,
             'category_id' => $request->category_id,
-            'user_id' => $request->user_id,
+            'user_id' => auth()->user()->id,
         ]);
         $question->save();
-        return $question;
+        return response(new QuestionResource($question), Response::HTTP_CREATED);
     }
 
     /**

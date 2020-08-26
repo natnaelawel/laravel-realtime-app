@@ -1,9 +1,12 @@
 import VueRouter from "vue-router";
+import Welcome from "./components/Welcome.vue";
 import Home from "./components/Home.vue";
 import Forum from "./components/Forum/Index.vue";
 import Questions from "./components/Forum/Questions.vue";
 import SingleQuestion from './components/Forum/QuestionShow.vue';
 import CreateQuestion from './components/Forum/Create.vue';
+import EditeQuestion from './components/Forum/Edit.vue';
+import CreateCategory from './components/Category/Create.vue';
 import Login from './components/Login/Login.vue';
 import Register from './components/Login/Register.vue';
 import User from "./helpers/User";
@@ -14,11 +17,19 @@ const isAuthenticated = () => {
 
 const routes = [{
         path: '/',
-        name: 'home',
-        component: Home,
+        name: 'welcome',
+        component: Welcome,
+        beforeEnter: (to, from, next) => {
+            if (!isAuthenticated()) {
+                next();
+            } else {
+                next({
+                    name: 'home'
+                });
+            }
+        },
         meta: {
-            requiresAuth: true,
-            // is_admin : true
+            requiresAuth: false,
         }
     },
     {
@@ -27,20 +38,17 @@ const routes = [{
         component: Login,
         meta: {
             requiresAuth: false,
-        }
+        },
+        beforeEnter: (to, from, next) => {
+            if (!isAuthenticated()) {
+                next();
+            } else {
+                next({
+                    name: 'home'
+                });
+            }
+        },
 
-        //  beforeEnter: (to, from, next)=>{
-        //     console.log(isAuthenticated());
-        //     if(isAuthenticated()){
-        //         next({
-        //             name: 'login'
-        //         });
-        //     }else{
-        //         next({
-        //             name: 'home'
-        //         });
-        //     }
-        // }
     },
     {
         path: '/register',
@@ -48,44 +56,97 @@ const routes = [{
         component: Register,
         meta: {
             requiresAuth: false,
+        },
+        beforeEnter: (to, from, next) => {
+            if (!isAuthenticated()) {
+                next();
+            } else {
+                next({
+                    name: 'home'
+                });
+            }
+        },
+    },
+    {
+        path: '/home',
+        name: 'home',
+        component: Home,
+        meta: {
+            requiresAuth: true,
         }
-        //  beforeEnter: (to, from, next)=>{
-        //     if(!isAuthenticated()){
-        //         next();
-        //     }else{
-        //         next({
-        //             name: 'home'
-        //         });
-        //     }
-        // }
+    },
+    {
+        path: '/category',
+        name: 'createCategory',
+        component: CreateCategory,
+        meta: {
+            requiresAuth: true,
+        },
+        beforeEnter: (to, from, next) => {
+            if (isAuthenticated()) {
+                next();
+            } else {
+                next({
+                    name: 'welcome'
+                });
+            }
+        },
     },
     {
         path: '/forum',
         name: 'forum',
         component: Forum,
-        meta: {
-            requiresAuth: true,
-        },
-        children: [
-            {
+        children: [{
                 path: '',
                 name: 'questions',
                 component: Questions,
+                meta: {
+                    requiresAuth: false,
+                },
+
             },
             {
-                name:'createQuestion',
+                name: 'createQuestion',
                 path: 'question/create',
-                component: CreateQuestion
+                component: CreateQuestion,
+                meta: {
+                    requiresAuth: true,
+                },
+                beforeEnter: (to, from, next) => {
+                    if (isAuthenticated()) {
+                        next();
+                    } else {
+                        next({
+                            name: 'welcome'
+                        });
+                    }
+                },
             },
             {
                 path: 'question/:slug',
                 name: 'showSingleQuestion',
-                component: SingleQuestion
+                component: SingleQuestion,
+                meta: {
+                    requiresAuth: false,
+                },
+
             },
             {
-                name:'editSingleQuestion',
-                path: 'posts/:slug/edit',
-                component: SingleQuestion
+                name: 'editSingleQuestion',
+                path: 'question/:slug/edit',
+                component: EditeQuestion,
+                meta: {
+                    requiresAuth: true,
+                },
+                beforeEnter: (to, from, next) => {
+                    if (isAuthenticated()) {
+                        next();
+                    } else {
+                        next({
+                            name: 'welcome'
+                        });
+                    }
+                },
             }
         ]
     },
@@ -96,25 +157,51 @@ const router = new VueRouter({
     routes // short for `routes: routes`
 });
 
-router.beforeEach((to, from, next) => {
-    if (to.matched.some(record => record.meta.requiresAuth)) {
-        if (!isAuthenticated()) {
-            next({
-                name: 'login',
-                // params: { nextUrl: to.fullPath }
-            });
-        } else {
-            next();
-        }
-    } else if (isAuthenticated()) {
-        next({
-            name: 'home',
-            // params: { nextUrl: to.fullPath }
-        });
-    } else {
-        next();
-    }
-});
+// router.beforeEach((to, from, next) => {
+//     console.log('to is ', to);
+//     if (to.matched.some(record => record.meta.requiresAuth)) {
+//         if (!isAuthenticated()) {
+//             console.log('require authorization true and is not authenticated');
+//             next({
+//                 name: 'login',
+//                 // params: { nextUrl: to.fullPath }
+//             });
+//         } else {
+//             console.log('require authorization true and is authenticated authenticated');
+//             next();
+//         }
+//     } else {
+//         if (isAuthenticated()) {
+//             console.log('require authorization false and is authenticated');
+//             if(to.path == '/register' || to.path == '/login'){
+
+//                 next({
+//                     name: 'home',
+//                     // params: { nextUrl: to.fullPath }
+//                 });
+//             }else{
+//                 next();
+//             }
+//         } else {
+//             console.log('require authorization false and is not authenticated');
+//             next();
+//         }
+
+//     }
+// });
 
 
 export default router;
+
+//  beforeEnter: (to, from, next)=>{
+//     console.log(isAuthenticated());
+//     if(isAuthenticated()){
+//         next({
+//             name: 'login'
+//         });
+//     }else{
+//         next({
+//             name: 'home'
+//         });
+//     }
+// }

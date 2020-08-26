@@ -9,8 +9,6 @@ class Token
     }
     payload(token){
         const payload = token.split('.')[1];
-
-        console.log(this.decode(payload));
         return this.decode(payload);
     }
 

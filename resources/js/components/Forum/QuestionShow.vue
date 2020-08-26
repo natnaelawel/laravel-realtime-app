@@ -1,43 +1,47 @@
 <template>
-  <v-row no-gutters class="question" mt-5>
-        <v-col cols="12">
-          <v-card color="#385F73"  dark>
-            <v-card-title class="headline">
-                <div>
-                    {{ question.title }}
-                </div>
-                <v-spacer></v-spacer>
-                <div>8 Replies</div>
-            </v-card-title>
-            <v-card-subtitle>
-              asked by
-              <strong>{{ question.user }}</strong>
-              {{ question.created_at }}
-            </v-card-subtitle>
+  <v-row no-gutters class="question">
+    <v-col cols="12">
+      <v-card color="#385F73" dark v-if="question">
+        <v-card-title class="headline">
+          <div>{{ question.title }}</div>
+          <v-spacer></v-spacer>
+          <div>{{ replyCount }} Replies</div>
+        </v-card-title>
+        <v-card-subtitle>
+          asked by
+          <strong>{{ question.user }}</strong>
+          {{ question.created_at }}
+        </v-card-subtitle>
 
-            <v-card-text v-html="question.body"></v-card-text>
-            <v-card-actions>
-              <v-btn text>
-                <v-icon>mdi-thumb-up-outline</v-icon>
-              </v-btn>
-              <v-btn text>
-                <v-icon>mdi-thumb-down-outline</v-icon>
-              </v-btn>
-              <v-btn text>
-                <v-icon>mdi-share-outline</v-icon>
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-col>
+        <v-card-text v-html="body"></v-card-text>
+        <v-card-actions v-if="own">
+          <v-btn text icon @click="edit">
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+          <v-btn text color="error" @click="destroy">
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-col>
+    <v-col cols="8">
+        <replies v-if="question" @replyDeleted="replyCount = replyCount - 1"  :slug="question.slug" :replies="question.replies"></replies>
+    </v-col>
   </v-row>
 </template>
 
 <script>
+import md from "marked";
+import RepliesVue from '../Reply/Replies.vue';
 export default {
   data() {
     return {
-      question: {},
+      question: null,
+      own: 1,
     };
+  },
+  components:{
+      replies: RepliesVue
   },
   mounted() {
     // const url = `/api/questions/${this.$route.params.slug}`
@@ -47,14 +51,40 @@ export default {
     // console.log('route 3 is ', route);
     axios
       .get(`/api/questions/${this.$route.params.slug}`)
-      .then((res) => (this.question = res.data.data))
+      .then((res) => {
+        this.question = res.data.data;
+        this.own = User.own(this.question.user_id);
+      })
       .catch((err) => console.log("error is occured ", err.message));
+  },
+  computed: {
+    body() {
+      return md.parse(this.question.body);
+    },
+    replyCount:{
+        get(){
+            return this.question.reply_count;
+        },
+        set(newReplyCount){
+        }
+    }
+  },
+  methods: {
+    destroy() {
+      axios
+        .delete(`/api/questions/${this.$route.params.slug}`)
+        .then(res => console.log('deleted successfully'))
+        .catch((err) => console.log("error is occured ", err.message));
+    },
+    edit(){
+        this.$router.push({ name: 'editSingleQuestion', params: { slug: this.$route.params.slug }});
+    }
   },
 };
 </script>
 
 <style scoped>
-    .question{
-        margin-top: 10px;
-    }
+/* .question { */
+  /* margin-top: 10px; */
+/* } */
 </style>

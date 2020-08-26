@@ -1,5 +1,4 @@
 <template>
-    <v-container >
         <v-form @submit.prevent="submit">
             <v-row  no-gutters>
                 <v-col class="login-form" md="4" offset="4">
@@ -33,10 +32,7 @@
                         <v-col>
                             <v-checkbox
                                 v-model="remember"
-                                :error-messages="rememberErrors"
                                 label="Remember me?"
-                                required
-                                @blur="$v.remember.$touch()"
                             ></v-checkbox
                         ></v-col>
                     </v-row>
@@ -48,7 +44,6 @@
                 </v-col>
             </v-row>
         </v-form>
-    </v-container>
 </template>
 
 <script>
@@ -62,11 +57,11 @@ export default {
     validations: {
         email: { required, email },
         password: { required},
-        remember: {
-            remember(val) {
-                return val;
-            }
-        }
+        // remember: {
+        //     remember(val) {
+        //         return val;
+        //     }
+        // }
     },
 
     data: () => ({
@@ -79,12 +74,12 @@ export default {
     }),
 
     computed: {
-        rememberErrors() {
-            const errors = [];
-            if (!this.$v.remember.$dirty) return errors;
-            !this.$v.remember.checked && errors.push("You must agree to continue!");
-            return errors;
-        },
+        // rememberErrors() {
+        //     const errors = [];
+        //     if (!this.$v.remember.$dirty) return errors;
+        //     !this.$v.remember.checked && errors.push("Remb");
+        //     return errors;
+        // },
         emailErrors() {
             const errors = [];
             if (!this.$v.email.$dirty) return errors;
@@ -104,10 +99,15 @@ export default {
     methods: {
         submit() {
             this.$v.$touch();
-            User.login({
-                email: this.email,
-                password: this.password
-            });
+             if (this.$v.$invalid) {
+
+             }else{
+                User.login({
+                    email: this.email,
+                    password: this.password
+                });
+             }
+
         }
     }
 };
@@ -115,6 +115,6 @@ export default {
 
 <style scoped>
     .login-form{
-        margin: 0 auto;
+        margin: 50px auto;
     }
 </style>>

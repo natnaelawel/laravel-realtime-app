@@ -142,7 +142,6 @@ export default {
         submit() {
             this.$v.$touch();
             if (this.$v.$invalid) {
-                console.log('there is an error');
             } else {
                 // console.log(this.form);
                 // User.register(this.form);
@@ -152,7 +151,6 @@ export default {
                     password: this.password
                 })
                 .then(res =>{
-                    console.log('data ', res.data);
                     User.responseAfterLogin(res.data);
                     this.$router.push({name: 'home'});
                     })

@@ -12,6 +12,10 @@ import Vuetify from 'vuetify';
 
 Vue.use(Vuetify);
 
+import VueSimplemde from 'vue-simplemde';
+
+Vue.use(VueSimplemde);
+
 import VueRouter from 'vue-router';
 
 Vue.use(VueRouter);
@@ -42,10 +46,12 @@ window.User = User;
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
+import AppIndex from './components/AppIndex.vue';
 import Home from './components/Home.vue';
 import Nav from './components/includes/AppNav.vue';
 import Footer from './components/includes/AppFooter.vue';
 Vue.component('AppNav', Nav);
+Vue.component('AppIndex', AppIndex);
 Vue.component('AppFooter', Footer);
 Vue.component('AppHome', Home);
 

@@ -34,9 +34,9 @@
 </head>
 <body>
     <div id="app">
-        <v-app>
-            <router-view></router-view>
-        </v-app>
+            {{-- {{ dd(JWTAuth::user()->id) }} --}}
+            {{-- <router-view></router-view> --}}
+            <app-index></app-index>
     </div>
 
 </body>

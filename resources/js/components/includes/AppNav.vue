@@ -1,16 +1,15 @@
 <template>
-  <nav >
+  <nav>
     <v-navigation-drawer
+      v-if="isLoggedIn"
       v-model="drawer"
       :color="color"
       :mini-variant="mini"
       height="calc(100vh - 62px)"
       miniVariantWidth="57"
       :src="bg"
-      absolute
       dark
       persistent
-      clipped
       app
       fixed
       permanent
@@ -55,37 +54,33 @@
     </v-navigation-drawer>
 
     <v-toolbar class="sticky" dark src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg">
-      <v-app-bar-nav-icon @click.native.stop="mini = !mini"></v-app-bar-nav-icon>
-
-      <v-toolbar-title>Laravel Forum</v-toolbar-title>
+      <v-app-bar-nav-icon v-if="isLoggedIn" @click.native.stop="mini = !mini"></v-app-bar-nav-icon>
+      <router-link to="/" class="toolbar-link">
+        <v-toolbar-title>Laravel Forum</v-toolbar-title>
+      </router-link>
 
       <v-spacer></v-spacer>
+      <app-notification v-if="isLoggedIn"></app-notification>
       <v-toolbar-items class="hidden-sm-and-md">
         <v-btn text>
-            <router-link class="toolbar-link" :to="{path:'/forum'}">
-                Forum
-            </router-link>
+          <router-link class="toolbar-link" to="/forum">Forum</router-link>
         </v-btn>
-        <v-btn text>
-            <router-link class="toolbar-link" :to="{name:'createQuestion'}">
-                Ask Question
-            </router-link>
+        <v-btn text v-if="isLoggedIn">
+          <router-link class="toolbar-link" to="/forum/question/create">Ask Question</router-link>
         </v-btn>
-          <v-btn text>
-              <router-link class="toolbar-link" to="/category">Category</router-link>
-          </v-btn>
+        <v-btn text v-if="isLoggedIn">
+          <router-link class="toolbar-link" to="/category">Category</router-link>
+        </v-btn>
         <template v-if="!isLoggedIn">
-          <v-btn text >
-              <router-link class="toolbar-link" to="/register">Signup</router-link>
+          <v-btn text>
+            <router-link class="toolbar-link" to="/register">Signup</router-link>
           </v-btn>
           <v-btn text>
             <router-link class="toolbar-link" to="/login">Signin</router-link>
           </v-btn>
         </template>
         <template v-else>
-          <v-btn text color="white"  @click.prevent="logout" >
-              Logout
-          </v-btn>
+          <v-btn text color="white" @click.prevent="logout">Logout</v-btn>
         </template>
       </v-toolbar-items>
     </v-toolbar>
@@ -93,6 +88,7 @@
 </template>
 
 <script>
+import NotificationIcon from "../AppNotification";
 // import NavBar from "./NavBar";
 // import NavDrawer from "./NavDrawer";
 export default {
@@ -120,7 +116,12 @@ export default {
         : undefined;
     },
     toolbarSize() {
-      this.$vuetify.breakpoint.name !== 'sm' ? this.mini = true : this.mini = false
+    //   this.$vuetify.breakpoint.name !== "sm"
+    //     ? (this.mini = true)
+    //     : (this.mini = false);
+        this.$vuetify.breakpoint.name === "sm" || this.$vuetify.breakpoint.name === "xs"
+      ? (this.mini = true)
+      : (this.mini = false);
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       switch (this.$vuetify.breakpoint.name) {
         case "xs":
@@ -139,34 +140,36 @@ export default {
   },
   mounted() {
     this.isLoggedIn = User.loggedIn();
-    this.$vuetify.breakpoint.name === "sm"
-      ? (this.mini = !this.mini)
-      : (this.mini = !this.mini);
+    console.log("breakpoint name is ", this.$vuetify.breakpoint.name);
+    this.$vuetify.breakpoint.name === "sm" || this.$vuetify.breakpoint.name === "xs"
+      ? (this.mini = true)
+      : (this.mini = false);
   },
   components: {
+      AppNotification: NotificationIcon
     // appNavBar : NavBar,
     // appNavDrawer : NavDrawer
   },
-  methods:{
-      logout(){
-          User.logOut();
-          this.$router.push({name: 'login'});
-      }
-  }
+  methods: {
+    logout() {
+      User.logOut();
+      this.$router.push({ name: "login" });
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-    .drawer {
-        margin-top: 64px;
-    }
-    .toolbar-link{
-        color: white;
-        text-decoration: none;
-    }
-   .sticky{
-    position: fixed !important;
-    z-index: 100;
-    width: 100%;
-    }
+// .drawer {
+// margin-top: 64px;
+// }
+.toolbar-link {
+  color: white;
+  text-decoration: none;
+}
+.sticky {
+  position: fixed !important;
+  z-index: 100;
+  width: 100%;
+}
 </style>>

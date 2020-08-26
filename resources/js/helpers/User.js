@@ -4,7 +4,6 @@ class User{
     login(formData){
         axios.post('api/auth/login', formData)
         .then(res =>{
-            console.log('data is ', res.data);
             this.responseAfterLogin(res.data);
             Token.payload(res.data.token);
             window.location = '/';

@@ -28,11 +28,42 @@ class LikeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function likeIt(Reply $reply)
+    public function likeUpdate($reply_id, Request $request)
     {
-        $reply->likes()->create([
-            'user_id' => 1
-        ]);
+        // dd($reply_id);
+        // if($request->status){
+
+        // }else{
+
+        // }
+        // $like = new Like([
+        //     'user_id' => auth()->id(),
+        //     'status' => "1",
+        //     'reply_id' => $reply->id,
+
+        // ]);
+        switch ($request->status) {
+            case "1": {
+                    $like = new Like([
+                        'reply_id' => (int) $reply_id,
+                        'user_id' => auth()->id(),
+                        'status' => "1",
+
+                    ]);
+                    $like->save();
+                    return $like;
+                }
+            case "-1": {
+                    $like = new Like([
+                        'reply_id' => (int) $reply_id,
+                        'user_id' => auth()->id(),
+                        'status' => "-1",
+
+                    ]);
+                    $like->save();
+                    return $like;
+                }
+        }
     }
 
 
@@ -44,8 +75,12 @@ class LikeController extends Controller
      */
     public function unLikeIt(Reply $reply)
     {
+        // $reply->likes()->where([
+        //     'user_id' => 1
+        // ])->first()->delete();
+
         $reply->likes()->where([
-            'user_id'=> 1
+            'user_id' => auth()->id()
         ])->first()->delete();
     }
 }

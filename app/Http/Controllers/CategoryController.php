@@ -12,9 +12,9 @@ class CategoryController extends Controller
 
     public function __construct()
     {
-        $this->middleware('jwt.verify', ['except' => ['login', 'register']]);
+        $this->middleware('jwt.verify', ['except' => ['index', 'show']]);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -41,7 +41,7 @@ class CategoryController extends Controller
         // dd($request);
         $category = new Category([
             'name' => $request->name,
-            'slug' => Str::slug($request->title, '-'),
+            'slug' => Str::slug($request->name, '-'),
         ]);
         $category->save();
         return response('created', Response::HTTP_CREATED);

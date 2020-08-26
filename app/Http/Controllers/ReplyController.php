@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ReplyResource;
 use App\Model\Question;
 use App\Model\Reply;
+use App\Notifications\NewReplyNotification;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -39,11 +40,18 @@ class ReplyController extends Controller
     {
         validator($request->all(),[
             'body'=> 'required|string',
-            'user_id'=> 'required',
         ]);
-        $request->question_id = $question->id;
-        $question->replies()->create($request->all());
-        return response('created', Response::HTTP_CREATED);
+        // $request->question_id = $question->id;
+        // $request->user_id = auth()->user()->id;
+       $reply = $question->replies()->create([
+            'body' => $request->body,
+            'user_id' => auth()->user()->id,
+        ]);
+        $user = $question->user;
+        if($reply->user_id !== $question->user_id){
+            $user->notify(new NewReplyNotification($reply));
+        }
+        return response(new ReplyResource($reply), Response::HTTP_CREATED);
     }
 
     /**
@@ -73,6 +81,8 @@ class ReplyController extends Controller
         ]);
 
         $reply->update($request->all());
+        return response(new ReplyResource($reply), Response::HTTP_ACCEPTED);
+
     }
 
     /**
@@ -84,6 +94,6 @@ class ReplyController extends Controller
     public function destroy(Question $question, Reply $reply)
     {
         $reply->delete();
-        return response(null, Response::HTTP_NO_CONTENT);
+        return response($reply, Response::HTTP_NO_CONTENT);
     }
 }

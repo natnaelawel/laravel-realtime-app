@@ -10,6 +10,7 @@ $factory->define(Like::class, function (Faker $faker) {
     return [
         'user_id' => function(){
             return User::all()->random();
-        }
+        },
+        // 'status' => $faker->randomElement([-1, 0, 1])
     ];
 });

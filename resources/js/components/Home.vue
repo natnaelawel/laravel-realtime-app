@@ -1,36 +1,25 @@
 <template>
-  <div class="">
-      <app-nav></app-nav>
-       <v-main>
-        <v-container
-          class="fill-height"
-          fluid>
-          <v-row
-            align="center"
-            justify="center"
-          >
-            <v-col class="text-center">
-             HomePage
-            </v-col>
-          </v-row>
-        </v-container>
-        <app-footer></app-footer>
-      </v-main>
+  <div>
+    <h1>Home Page</h1>
+    <ab-component></ab-component>
   </div>
 </template>
 
 <script>
+import AB from "./check/AB";
 export default {
-    name:'app-home',
-    data(){
-        return {
-            on: true,
-        }
-    }
-
-}
+  name: "app-home",
+  created() {},
+  data() {
+    return {
+      isLogged: true,
+    };
+  },
+  components: {
+    abComponent: AB,
+  },
+};
 </script>
 
-<style>
-
+<style lang="scss" scoped>
 </style>
