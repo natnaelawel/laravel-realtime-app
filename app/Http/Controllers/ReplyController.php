@@ -6,6 +6,7 @@ use App\Http\Resources\ReplyResource;
 use App\Model\Question;
 use App\Model\Reply;
 use App\Notifications\NewReplyNotification;
+use App\Events\DeleteReplyEvent;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -94,6 +95,7 @@ class ReplyController extends Controller
     public function destroy(Question $question, Reply $reply)
     {
         $reply->delete();
+        broadcast(new DeleteReplyEvent($reply->id))->toOthers();
         return response($reply, Response::HTTP_NO_CONTENT);
     }
 }

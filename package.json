@@ -24,12 +24,12 @@
         "sass-loader": "^8.0.0"
     },
     "dependencies": {
-        "vue": "^2.5.17",
-        "vue-template-compiler": "^2.6.10",
         "laravel-echo": "^1.8.1",
         "pusher-js": "^7.0.0",
+        "vue": "^2.5.17",
         "vue-router": "^3.4.2",
         "vue-simplemde": "^1.1.2",
+        "vue-template-compiler": "^2.6.10",
         "vuelidate": "^0.7.5",
         "vuetify": "^2.3.8",
         "vuex": "^3.5.1"

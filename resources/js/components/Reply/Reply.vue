@@ -16,6 +16,7 @@
             :DislikeCount="dislikedCount"
             :Liked="isLiked"
             :Disliked="isDisliked"
+            :isLoggedIn="isLoggedIn"
           ></likes>
         </template>
         <v-spacer></v-spacer>
@@ -69,9 +70,12 @@ export default {
     reply: { required },
   },
   props: ["reply", "replyIndex"],
-  mounted() {},
+  mounted() {
+    this.isLoggedIn = User.loggedIn();
+  },
   data() {
     return {
+      isLoggedIn: false,
       editDialog: false,
       replyContent: this.reply.reply,
       Liked: this.checkLiked(this.reply.like_status),
@@ -144,25 +148,27 @@ export default {
         })
         .catch((err) => console.log(err));
     },
-    checkLiked(value){
-        switch(value){
-            case "1":
-                return true;
-            case "0":
-                return false;
+    checkLiked(value) {
+      switch (value) {
+        case "1":
+          return true;
+        case "0":
+          return false;
 
-            default : return false
-        }
+        default:
+          return false;
+      }
     },
-     checkDisliked(value){
-        switch(value){
-            case "-1":
-                return true;
-            case "0":
-                return false;
-            default : return false
-        }
-    }
+    checkDisliked(value) {
+      switch (value) {
+        case "-1":
+          return true;
+        case "0":
+          return false;
+        default:
+          return false;
+      }
+    },
   },
   components: {
     Likes: LikeVue,

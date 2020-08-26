@@ -1,7 +1,7 @@
 <template>
   <v-menu bottom origin="center center" transition="scale-transition">
     <template v-slot:activator="{ on, attrs }">
-      <v-badge style="padding: 0 10px" :content="unReadCount" :value="unReadCount" color="primary" dark overlap>
+      <v-badge style="margin: 0 10px" :content="unReadCount" :value="unReadCount" color="primary" dark overlap>
         <v-icon v-bind="attrs" v-on="on">{{ (unReadCount > 0) ? 'mdi-bell': 'mdi-bell-outline' }}</v-icon>
       </v-badge>
     </template>
@@ -48,6 +48,12 @@ export default {
     if (User.loggedIn()) {
       this.getNotifications();
     }
+    Echo.private("App.User." + User.id()).notification((notification) => {
+      console.log(notification.type);
+      console.log('inside mounted')
+      this.unRead.unshift(notification)
+      this.unReadCount++
+    });
   },
   methods: {
     getNotifications() {

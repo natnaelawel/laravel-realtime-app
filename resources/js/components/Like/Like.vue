@@ -1,13 +1,25 @@
 <template>
   <div>
-    <v-btn text @click="like">
-      <v-icon>{{ isLiked && !Disliked ? 'mdi-thumb-up': 'mdi-thumb-up-outline' }}</v-icon>
-      <span style="padding: 0 10px; font-weight: bold">{{ likedCount }}</span>
-    </v-btn>
-    <v-btn text @click="dislike">
-      <v-icon>{{ isDisliked && !Liked ? 'mdi-thumb-down': 'mdi-thumb-down-outline' }}</v-icon>
-      <span style="padding: 20px; font-weight: bold">{{ dislikedCount }}</span>
-    </v-btn>
+    <template v-if="isLoggedIn">
+      <v-btn text @click="like">
+        <v-icon>{{ isLiked && !Disliked ? 'mdi-thumb-up': 'mdi-thumb-up-outline' }}</v-icon>
+        <span style="padding: 0 10px; font-weight: bold">{{ likedCount }}</span>
+      </v-btn>
+      <v-btn text @click="dislike">
+        <v-icon>{{ isDisliked && !Liked ? 'mdi-thumb-down': 'mdi-thumb-down-outline' }}</v-icon>
+        <span style="padding: 20px; font-weight: bold">{{ dislikedCount }}</span>
+      </v-btn>
+    </template>
+    <template v-else>
+      <v-btn text>
+        <v-icon>{{ isLiked && !Disliked ? 'mdi-thumb-up': 'mdi-thumb-up-outline' }}</v-icon>
+        <span style="padding: 0 10px; font-weight: bold">{{ likedCount }}</span>
+      </v-btn>
+      <v-btn text>
+        <v-icon>{{ isDisliked && !Liked ? 'mdi-thumb-down': 'mdi-thumb-down-outline' }}</v-icon>
+        <span style="padding: 20px; font-weight: bold">{{ dislikedCount }}</span>
+      </v-btn>
+    </template>
   </div>
 </template>
 
@@ -32,9 +44,33 @@ export default {
       type: Number,
       default: 10,
     },
+    isLoggedIn: {
+      type: Boolean,
+      default: false,
+    },
   },
-  mounted() {
-    console.log("disliked is ", this.Disliked);
+  created() {
+    // console.log("disliked is ", this.Disliked);
+    Echo.channel("likeChannel").listen("LikeEvent", (e) => {
+        console.log(e)
+      if (this.replyId === e.id) {
+        if (e.type === "like") {
+          if (e.status === 1) {
+            this.likedCount++;
+          } else {
+            this.likedCount--;
+          }
+        }
+        if (e.type === "dislike") {
+          if (e.status === 1) {
+            this.dislikedCount++;
+          } else {
+            this.dislikedCount--;
+          }
+        }
+      }
+      console.log(e);
+    });
   },
   data() {
     return {
@@ -56,15 +92,15 @@ export default {
         if (!this.isDisliked) {
           this.likedCount--;
           this.isLiked = false;
-          this.deleteLikeStatus();
+          this.deleteLikeStatus("like");
           console.log("phase 2");
         } else {
           this.likedCount++;
           this.dislikedCount--;
           this.isDisliked = false;
           this.isLiked = true;
-        this.deleteLikeStatus();
           this.changeLikeStatus("1");
+          this.deleteLikeStatus("dislike");
 
           console.log("phase 3");
         }
@@ -83,7 +119,7 @@ export default {
         if (!this.isLiked) {
           this.dislikedCount--;
           this.isDisliked = false;
-          this.deleteLikeStatus();
+          this.deleteLikeStatus("dislike");
 
           console.log("phase 22");
         } else {
@@ -91,8 +127,8 @@ export default {
           this.likedCount--;
           this.isLiked = false;
           this.isDisliked = true;
-        this.deleteLikeStatus();
           this.changeLikeStatus("-1");
+          this.deleteLikeStatus("like");
 
           console.log("phase 33");
         }
@@ -109,9 +145,9 @@ export default {
         .then((res) => console.log(res.data))
         .catch((err) => console.log(err));
     },
-    deleteLikeStatus() {
+    deleteLikeStatus(type) {
       axios
-        .delete(`/api/likes/${this.replyId}`)
+        .delete(`/api/likes/${this.replyId}/${type}`)
         .then((res) => console.log(res.data))
         .catch((err) => console.log(err));
     },

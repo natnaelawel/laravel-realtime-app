@@ -53,7 +53,7 @@ Route::apiResource('categories', 'CategoryController');
 Route::get('likes/{reply}', 'LikeController@likes');
 Route::post('likes/{reply}', 'LikeController@likeIt');
 Route::put('likes/{reply}', 'LikeController@likeUpdate');
-Route::delete('likes/{reply}', 'LikeController@unLikeIt');
+Route::delete('likes/{reply}/{type}', 'LikeController@unLikeIt');
 
 
 Route::post('notifications','NotificationController@index');
