@@ -1,7 +1,35 @@
 <template>
   <v-row no-gutters class="question">
     <v-col cols="12">
-      <v-alert
+      <v-snackbar
+        v-model="showAlert"
+        :timeout="2000"
+        :value="showAlert"
+        :color="error.type"
+        vertical
+        absolute
+        right
+        shaped
+        min-height="100"
+        multi-line
+        app
+        top
+      >
+      <div class="headline">
+        {{ error.value }}
+      </div>
+       <template v-slot:action="{ attrs }">
+        <v-btn
+          class="white--text"
+          text
+          v-bind="attrs"
+          @click="showAlert = false"
+        >
+          Close
+        </v-btn>
+      </template>
+      </v-snackbar>
+      <!-- <v-alert
         v-if="showAlert"
         :type="error.type"
         close-text="Close"
@@ -14,7 +42,7 @@
         absolute
         right
         fab
-      >{{ error.value }}</v-alert>
+      >{{ error.value }}</v-alert> -->
       <v-card color="#385F73" dark v-if="question">
         <v-card-title class="headline">
           <div>{{ question.title }}</div>
@@ -46,7 +74,7 @@
         @replyAdded="reply_count++ && displayAlert('success', 'reply Added successfully')"
         :slug="question.slug"
         :replies="question.replies"
-        @error="displayAlert('danger', this.$event)"
+        @error="displayAlert('danger','there is an error')"
       ></replies>
     </v-col>
   </v-row>
@@ -111,10 +139,10 @@ export default {
       });
     },
     displayAlert(type, message) {
-        this.error = {
-            type,
-            value: message
-        }
+      this.error = {
+        type,
+        value: message,
+      };
       this.hasAlert = true;
       return setTimeout(() => (this.hasAlert = false), 2000);
     },

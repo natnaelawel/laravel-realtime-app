@@ -42,6 +42,7 @@ export default {
       read: {},
       unRead: {},
       unReadCount: 0,
+      soundLink: 'http://soundbible.com/mp3/sms-alert-3-daniel_simon.mp3'
     };
   },
   created() {
@@ -53,6 +54,7 @@ export default {
       console.log('inside mounted')
       this.unRead.unshift(notification)
       this.unReadCount++
+      this.playSound()
     });
   },
   methods: {
@@ -76,6 +78,10 @@ export default {
     slugify(value) {
       return value.toLocaleLowerCase().replace(/ /g, "-").replace(".", "");
     },
+    playSound(){
+        let alert = new Audio(this.soundLink)
+        alert.play()
+    }
   },
 };
 </script>
