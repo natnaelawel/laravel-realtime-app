@@ -1,7 +1,13 @@
+import AppStorage from "./AppStorage";
+
 class Token
 {
     isValid(token){
         const payload = this.payload(token);
+        if (payload.exp < Date.now() / 1000) {
+            AppStorage.clear();
+            return false
+        }
         if(payload){
             return payload.iss === "http://laravel-realtime-app.test/api/auth/login" || "http://laravel-realtime-app.test/api/auth/register" ? true : false;
         }

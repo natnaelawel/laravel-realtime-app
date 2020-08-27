@@ -1,10 +1,8 @@
 <template>
   <v-app>
     <app-nav></app-nav>
-    <v-main class="main" fluid>
-      <v-container>
-        <router-view></router-view>
-      </v-container>
+    <v-main class="main" :style="'margin-top:'+ toolbarSize()" fluid>
+      <router-view></router-view>
       <app-footer></app-footer>
     </v-main>
   </v-app>
@@ -17,12 +15,28 @@ export default {
   data() {
     return {};
   },
+  methods: {
+    toolbarSize() {
+      switch (this.$vuetify.breakpoint.name) {
+        case "xs":
+        case "sm":
+          return "56px";
+        case "md":
+          return "64px";
+        case "lg":
+          return "64px";
+        case "xl":
+          return "70px";
+        default:
+          return "64px";
+      }
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 .main {
-  margin-top: 50px;
   height: 100vh !important ;
   overflow-y: scroll;
 }

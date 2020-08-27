@@ -1,6 +1,20 @@
 <template>
   <v-row no-gutters class="question">
     <v-col cols="12">
+      <v-alert
+        v-if="showAlert"
+        :type="error.type"
+        close-text="Close"
+        close-icon="mdi-delete"
+        dark
+        dismissible
+        prominent
+        elevation="2"
+        transition="scale-transition"
+        absolute
+        right
+        fab
+      >{{ error.value }}</v-alert>
       <v-card color="#385F73" dark v-if="question">
         <v-card-title class="headline">
           <div>{{ question.title }}</div>
@@ -25,23 +39,37 @@
       </v-card>
     </v-col>
     <v-col cols="8">
-        <replies v-if="question" @replyDeleted="replyCount = replyCount - 1"  :slug="question.slug" :replies="question.replies"></replies>
+      <replies
+        transition="scale-transition"
+        v-if="question"
+        @replyDeleted="reply_count-- && displayAlert('warning','reply Deleted successfully')"
+        @replyAdded="reply_count++ && displayAlert('success', 'reply Added successfully')"
+        :slug="question.slug"
+        :replies="question.replies"
+        @error="displayAlert('danger', this.$event)"
+      ></replies>
     </v-col>
   </v-row>
 </template>
 
 <script>
 import md from "marked";
-import RepliesVue from '../Reply/Replies.vue';
+import RepliesVue from "../Reply/Replies.vue";
 export default {
   data() {
     return {
       question: null,
       own: 1,
+      reply_count: 0,
+      error: {
+        type: "success",
+        value: "Reply created successfully",
+      },
+      hasAlert: false,
     };
   },
-  components:{
-      replies: RepliesVue
+  components: {
+    replies: RepliesVue,
   },
   mounted() {
     // const url = `/api/questions/${this.$route.params.slug}`
@@ -53,6 +81,7 @@ export default {
       .get(`/api/questions/${this.$route.params.slug}`)
       .then((res) => {
         this.question = res.data.data;
+        this.reply_count = this.question.reply_count;
         this.own = User.own(this.question.user_id);
       })
       .catch((err) => console.log("error is occured ", err.message));
@@ -61,30 +90,40 @@ export default {
     body() {
       return md.parse(this.question.body);
     },
-    replyCount:{
-        get(){
-            return this.question.reply_count;
-        },
-        set(newReplyCount){
-        }
-    }
+    replyCount() {
+      return this.reply_count;
+    },
+    showAlert() {
+      return this.hasAlert;
+    },
   },
   methods: {
     destroy() {
       axios
         .delete(`/api/questions/${this.$route.params.slug}`)
-        .then(res => console.log('deleted successfully'))
+        .then((res) => console.log("deleted successfully"))
         .catch((err) => console.log("error is occured ", err.message));
     },
-    edit(){
-        this.$router.push({ name: 'editSingleQuestion', params: { slug: this.$route.params.slug }});
-    }
+    edit() {
+      this.$router.push({
+        name: "editSingleQuestion",
+        params: { slug: this.$route.params.slug },
+      });
+    },
+    displayAlert(type, message) {
+        this.error = {
+            type,
+            value: message
+        }
+      this.hasAlert = true;
+      return setTimeout(() => (this.hasAlert = false), 2000);
+    },
   },
 };
 </script>
 
 <style scoped>
 /* .question { */
-  /* margin-top: 10px; */
+/* margin-top: 10px; */
 /* } */
 </style>

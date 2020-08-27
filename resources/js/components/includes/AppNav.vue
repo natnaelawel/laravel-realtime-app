@@ -53,7 +53,7 @@
       </template>
     </v-navigation-drawer>
 
-    <v-toolbar class="sticky" dark src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg">
+    <v-toolbar class="sticky" dark src="/img/question-mark-2.jpg">
       <v-app-bar-nav-icon v-if="isLoggedIn" @click.native.stop="mini = !mini"></v-app-bar-nav-icon>
       <router-link to="/" class="toolbar-link">
         <v-toolbar-title>Laravel Forum</v-toolbar-title>
@@ -112,8 +112,8 @@ export default {
   computed: {
     bg() {
       return this.background
-        ? "https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg"
-        : undefined;
+        ? "/img/question-mark-2.jpg"
+        :  "https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg";
     },
     toolbarSize() {
     //   this.$vuetify.breakpoint.name !== "sm"

@@ -1,7 +1,15 @@
 <template>
   <div>
     <h1>Replies</h1>
-    <new-reply @created="appendReplies" v-if="slug" :slug="slug"></new-reply>
+
+    <template v-if="isLoggedIn">
+        <new-reply @error="errorOccured"  @created="appendReplies" v-if="slug && isLoggedIn" :slug="slug"></new-reply>
+    </template>
+    <template v-else>
+        <v-btn dark class="primary ">
+            <router-link class="text-decoration:none white--text" dark to="/login">Signin</router-link>
+        </v-btn>
+    </template>
     <template v-if="allReplies">
       <reply
         v-for="(reply, index) in allReplies"
@@ -22,13 +30,17 @@ import newReply from "./New.vue";
 export default {
   props: ["replies", "slug"],
   data() {
-    return {};
+    return {
+
+    };
   },
   mounted() {
     Echo.private("App.User." + User.id()).notification((notification) => {
       console.log(notification.type);
       console.log('inside mounted')
       this.replies.unshift(notification.reply)
+      this.$emit("replyAdded");
+
     });
 
     Echo.channel("deleteReplyChannel")
@@ -39,6 +51,8 @@ export default {
           const element = this.replies[index];
           if(element.id == e.id){
               this.allReplies.splice(index, 1);
+                this.$emit("replyDeleted");
+
           }
       }
     //   this.replies.map((reply)=>{
@@ -53,6 +67,8 @@ export default {
       console.log("added reply is ", reply);
       //   console.log('whole replies are ', this.replies);
       this.allReplies.unshift(reply);
+      this.$emit("replyAdded");
+
         console.log('added by the user are ', this.replies);
     },
     destroyReply(index) {
@@ -76,6 +92,9 @@ export default {
 
       });
     },
+    errorOccured(value){
+        this.$emit('error', value)
+    }
   },
   computed: {
     allReplies: {
@@ -84,6 +103,9 @@ export default {
       },
       set(newReplies) {},
     },
+    isLoggedIn(){
+        return User.loggedIn()
+    }
   },
   components: {
     reply: ReplyVue,

@@ -15,141 +15,149 @@ const isAuthenticated = () => {
     return User.loggedIn();
 };
 
-const routes = [{
-        path: '/',
-        name: 'welcome',
+const routes = [
+    {
+        path: "/",
+        name: "welcome",
         component: Welcome,
         beforeEnter: (to, from, next) => {
             if (!isAuthenticated()) {
                 next();
             } else {
                 next({
-                    name: 'home'
+                    name: "home"
                 });
             }
         },
         meta: {
-            requiresAuth: false,
+            requiresAuth: false
         }
     },
     {
-        path: '/login',
-        name: 'login',
+        path: "/login",
+        name: "login",
         component: Login,
         meta: {
-            requiresAuth: false,
+            requiresAuth: false
         },
         beforeEnter: (to, from, next) => {
             if (!isAuthenticated()) {
                 next();
             } else {
                 next({
-                    name: 'home'
+                    name: "home"
                 });
             }
-        },
-
-    },
-    {
-        path: '/register',
-        name: 'register',
-        component: Register,
-        meta: {
-            requiresAuth: false,
-        },
-        beforeEnter: (to, from, next) => {
-            if (!isAuthenticated()) {
-                next();
-            } else {
-                next({
-                    name: 'home'
-                });
-            }
-        },
-    },
-    {
-        path: '/home',
-        name: 'home',
-        component: Home,
-        meta: {
-            requiresAuth: true,
         }
     },
     {
-        path: '/category',
-        name: 'createCategory',
-        component: CreateCategory,
+        path: "/register",
+        name: "register",
+        component: Register,
         meta: {
-            requiresAuth: true,
+            requiresAuth: false
+        },
+        beforeEnter: (to, from, next) => {
+            if (!isAuthenticated()) {
+                next();
+            } else {
+                next({
+                    name: "home"
+                });
+            }
+        }
+    },
+    {
+        path: "/home",
+        name: "home",
+        component: Home,
+        meta: {
+            requiresAuth: true
         },
         beforeEnter: (to, from, next) => {
             if (isAuthenticated()) {
                 next();
             } else {
                 next({
-                    name: 'welcome'
+                    name: "welcome"
                 });
             }
-        },
+        }
     },
     {
-        path: '/forum',
-        name: 'forum',
+        path: "/category",
+        name: "createCategory",
+        component: CreateCategory,
+        meta: {
+            requiresAuth: true
+        },
+        beforeEnter: (to, from, next) => {
+            if (isAuthenticated()) {
+                next();
+            } else {
+                next({
+                    name: "welcome"
+                });
+            }
+        }
+    },
+    {
+        path: "/forum",
+        name: "forum",
         component: Forum,
-        children: [{
-                path: '',
-                name: 'questions',
+        children: [
+            {
+                path: "",
+                name: "questions",
                 component: Questions,
                 meta: {
-                    requiresAuth: false,
-                },
-
+                    requiresAuth: false
+                }
             },
             {
-                name: 'createQuestion',
-                path: 'question/create',
+                name: "createQuestion",
+                path: "question/create",
                 component: CreateQuestion,
                 meta: {
-                    requiresAuth: true,
+                    requiresAuth: true
                 },
                 beforeEnter: (to, from, next) => {
                     if (isAuthenticated()) {
                         next();
                     } else {
                         next({
-                            name: 'welcome'
+                            name: "welcome"
                         });
                     }
-                },
+                }
             },
             {
-                path: 'question/:slug',
-                name: 'showSingleQuestion',
+                path: "question/:slug",
+                name: "showSingleQuestion",
                 component: SingleQuestion,
                 meta: {
-                    requiresAuth: false,
-                },
-
+                    requiresAuth: false
+                }
             },
             {
-                name: 'editSingleQuestion',
-                path: 'question/:slug/edit',
+                name: "editSingleQuestion",
+                path: "question/:slug/edit",
                 component: EditeQuestion,
                 meta: {
-                    requiresAuth: true,
+                    requiresAuth: true
                 },
                 beforeEnter: (to, from, next) => {
                     if (isAuthenticated()) {
                         next();
                     } else {
                         next({
-                            name: 'welcome'
+                            name: "welcome"
                         });
                     }
-                },
+                }
             }
         ]
-    },
+    }
 ];
 const router = new VueRouter({
     mode: "history",
