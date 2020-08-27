@@ -80,6 +80,12 @@
           </v-btn>
         </template>
         <template v-else>
+          <v-btn text>
+            <v-avatar size="42" color="blue-grey darken-3" >
+              <!-- <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" /> -->
+              <span class="white--text body-2">{{ getName() }}</span>
+            </v-avatar>
+          </v-btn>
           <v-btn text color="white" @click.prevent="logout">Logout</v-btn>
         </template>
       </v-toolbar-items>
@@ -113,15 +119,16 @@ export default {
     bg() {
       return this.background
         ? "/img/question-mark-2.jpg"
-        :  "https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg";
+        : "https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg";
     },
     toolbarSize() {
-    //   this.$vuetify.breakpoint.name !== "sm"
-    //     ? (this.mini = true)
-    //     : (this.mini = false);
-        this.$vuetify.breakpoint.name === "sm" || this.$vuetify.breakpoint.name === "xs"
-      ? (this.mini = true)
-      : (this.mini = false);
+      //   this.$vuetify.breakpoint.name !== "sm"
+      //     ? (this.mini = true)
+      //     : (this.mini = false);
+      this.$vuetify.breakpoint.name === "sm" ||
+      this.$vuetify.breakpoint.name === "xs"
+        ? (this.mini = true)
+        : (this.mini = false);
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       switch (this.$vuetify.breakpoint.name) {
         case "xs":
@@ -141,12 +148,13 @@ export default {
   mounted() {
     this.isLoggedIn = User.loggedIn();
     console.log("breakpoint name is ", this.$vuetify.breakpoint.name);
-    this.$vuetify.breakpoint.name === "sm" || this.$vuetify.breakpoint.name === "xs"
+    this.$vuetify.breakpoint.name === "sm" ||
+    this.$vuetify.breakpoint.name === "xs"
       ? (this.mini = true)
       : (this.mini = false);
   },
   components: {
-      AppNotification: NotificationIcon
+    AppNotification: NotificationIcon,
     // appNavBar : NavBar,
     // appNavDrawer : NavDrawer
   },
@@ -154,6 +162,16 @@ export default {
     logout() {
       User.logOut();
       this.$router.push({ name: "login" });
+    },
+    getName() {
+      const fullname = User.name()
+        .trim()
+        .replace(/^\w/, (c) => c.toUpperCase())
+        .split(" ");
+      const firstLetterOfFirstName = fullname[0][0];
+      const firstLetterOfLastName = fullname[1][0];
+      console.log('name of user ',firstLetterOfFirstName, firstLetterOfLastName);
+      return `${firstLetterOfFirstName}${firstLetterOfLastName}`;
     },
   },
 };

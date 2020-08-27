@@ -7,7 +7,7 @@
     </template>
     <template v-else>
         <v-btn dark class="primary ">
-            <router-link class="text-decoration:none white--text" dark to="/login">Signin</router-link>
+            <router-link class="text-decoration:none white--text" dark to="/login">Signin to reply</router-link>
         </v-btn>
     </template>
     <template v-if="allReplies">
